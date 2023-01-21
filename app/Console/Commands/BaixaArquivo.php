@@ -44,7 +44,6 @@ class BaixaArquivo extends Command
 
         foreach($arquivo as $linha)
         {
-            ExtrairDadosService::extrairDados($linha);
 
             $client = new Client();
 
@@ -54,10 +53,13 @@ class BaixaArquivo extends Command
 
             if(!Storage::exists(trim($linha))){
                 Storage::put(trim($linha), $content);
+                ExtrairDadosService::extrairDados($linha);
                 break;
             }else{
                 Storage::delete(trim($linha));
                 Storage::put(trim($linha), $content);
+                ExtrairDadosService::extrairDados($linha);
+                break;
             }
 
             //PersisteDadosService::persisteDados(explode('}', '/var/www/html/storage/app/products_01Extraido.txt'));
