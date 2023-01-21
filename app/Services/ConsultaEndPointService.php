@@ -10,10 +10,8 @@ class ConsultaEndPointService {
     private static $arquivo;
     private static $caminhoArquivo;
 
-    public static function getArquivo($endpoint)
+    public static function getArquivo()
     {
-        self::$caminhoArquivo  = $endpoint;
-
         self::$arquivo = file_get_contents(self::$caminhoArquivo);
 
         return self::$arquivo;
