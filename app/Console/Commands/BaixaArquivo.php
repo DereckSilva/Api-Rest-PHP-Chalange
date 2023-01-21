@@ -17,6 +17,13 @@ class BaixaArquivo extends Command
      * @var string
      */
     protected $signature = 'baixa:arquivo';
+    private $endpoint ;
+
+
+    public function __construct(ConsultaEndPointService $consulta, Cliente $cliente)
+    {
+        $this->endpoint = $consulta;
+    }
 
     /**
      * The console command description.

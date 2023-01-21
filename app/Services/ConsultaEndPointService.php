@@ -7,18 +7,13 @@ use ZipArchive;
 
 class ConsultaEndPointService {
 
-    private $arquivo;
-    private $caminhoArquivo;
+    private static $arquivo;
+    private static $caminhoArquivo;
 
-    public function __construct($endpoint)
+    public static function getArquivo()
     {
-        $this->caminhoArquivo = $endpoint;
-    }
+        self::$arquivo = file_get_contents(self::$caminhoArquivo);
 
-    public function getArquivo()
-    {
-        $this->arquivo = file_get_contents($this->caminhoArquivo);
-
-        return $this->arquivo;
+        return self::$arquivo;
     }
 }
