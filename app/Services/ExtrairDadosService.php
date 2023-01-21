@@ -16,7 +16,10 @@ class ExtrairDadosService {
 
     public function extrairDados()
     {
-
+        //montando arquivo txt com os dados do arquivo compactado
+        $gzippedFile = file_get_contents('/var/www/html/storage/app/products_01.json.gz');
+        $contents = gzdecode($gzippedFile);
+        Storage::put('file.txt', $contents);
     }
 
 }
