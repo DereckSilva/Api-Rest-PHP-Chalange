@@ -4,10 +4,10 @@ namespace App\Console\Commands;
 
 use App\Services\ConsultaEndPointService;
 use App\Services\ExtrairDadosService;
+use App\Services\PersisteDadosService;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
-use File;
 
 class BaixaArquivo extends Command
 {
@@ -32,9 +32,7 @@ class BaixaArquivo extends Command
      */
     public function handle()
     {
-        $endpoint = new ConsultaEndPointService("https://challenges.coode.sh/food/data/json/index.txt");
-
-        $texto = $endpoint->getArquivo();
+        $texto = ConsultaEndPointService::getArquivo("https://challenges.coode.sh/food/data/json/index.txt");
 
         if(!Storage::exists("produtos.txt")){
             Storage::append("produtos.txt", $texto);
@@ -45,23 +43,23 @@ class BaixaArquivo extends Command
 
         foreach($arquivo as $linha)
         {
+            ExtrairDadosService::extrairDados($linha);
+
             $client = new Client();
 
             $response = $client->get("https://challenges.coode.sh/food/data/json/".trim($linha));
 
-
             $content = $response->getBody()->getContents();
 
-            $pos = strpos($linha, '.');
-            $novoArquivo = substr($linha, 0, $pos);
-
-            if(!Storage::exists($novoArquivo.'.json.gz')){
-                Storage::put($novoArquivo.'.json.gz', $content);
+            if(!Storage::exists(trim($linha))){
+                Storage::put(trim($linha), $content);
                 break;
             }else{
-                Storage::delete($novoArquivo.'.json.gz');
-                Storage::put($novoArquivo.'.json.gz', $content);
+                Storage::delete(trim($linha));
+                Storage::put(trim($linha), $content);
             }
+
+            //PersisteDadosService::persisteDados(explode('}', '/var/www/html/storage/app/products_01Extraido.txt'));
         }
 
 

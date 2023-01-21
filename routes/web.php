@@ -1,6 +1,8 @@
 <?php
 
+use App\Services\PersisteDadosService;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('te', function () {
+    $teste = file_get_contents('/var/www/html/storage/app/products_01Extraido.txt');
+    return PersisteDadosService::persisteDados($teste);
 });
