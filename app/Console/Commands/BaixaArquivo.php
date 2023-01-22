@@ -34,6 +34,8 @@ class BaixaArquivo extends Command
      */
     public function handle()
     {
+        $inicioCron = now();
+
         $texto = ConsultaEndPointService::getArquivo("https://challenges.coode.sh/food/data/json/index.txt");
 
         if(!Storage::exists("produtos.txt")){
@@ -66,6 +68,11 @@ class BaixaArquivo extends Command
 
             //manipula arquivo para ser inserido na base de dados
             ManipulacaoArquivoService::formatarDados('/var/www/html/storage/app/'.$novoArquivo.'Extraido.txt');
+
+            $dadosCron = '{Conexão com base: Ok, Leitura de dados: Ok, Escrita na base: ok, ';
+            $dadosCron .= "Data: ".now().", Inicio Cron: {$inicioCron}, Memória: ".memory_get_usage()."}";
+
+            Storage::append($novoArquivo.'.log.txt', $dadosCron);
 
         }
 

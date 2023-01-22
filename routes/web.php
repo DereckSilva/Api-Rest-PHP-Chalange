@@ -4,6 +4,7 @@ use App\Services\ManipulacaoArquivoService;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('te', function () {
-    return view('helcome');
+Route::get('/', function () {
+    return view('welcome');
 });

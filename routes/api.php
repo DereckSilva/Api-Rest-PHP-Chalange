@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\ArquivoController;
+use App\Http\Resources\ProductResource;
+use App\Models\Produto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +18,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::get('/', [ArquivoController::class, 'getNomeArquivo']);
+Route::get('/', function(){
+    return Response(["message" => "hello"]);
+});
+
+Route::get('te/{id}', function($id){
+
+    $dados = Produto::where('code',$id)->get();
+
+    return ProductResource::collection($dados);
 });
