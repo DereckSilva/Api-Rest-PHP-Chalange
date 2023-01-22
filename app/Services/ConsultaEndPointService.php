@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -11,10 +12,16 @@ class ConsultaEndPointService {
 
     public static function getArquivo($arquivo)
     {
-        self::$arquivo = $arquivo;
+        try{
 
-        self::$arquivo = file_get_contents(self::$arquivo);
+            self::$arquivo = $arquivo;
 
-        return self::$arquivo;
+            self::$arquivo = file_get_contents(self::$arquivo);
+
+            return self::$arquivo;
+
+        }catch(Exception $e){
+            return response()->json(["error" => $e->getMessage()], 500);
+        }
     }
 }

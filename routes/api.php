@@ -29,7 +29,7 @@ Route::prefix('produtos')->group(function(){
             //desenvolvimento de rotas
 
             Route::get('/', function (){
-                $dados = Produto::paginate();
+                $dados = Produto::paginate(10);
 
                 return ProductResource::collection($dados);
             })->withoutMiddleware('products');

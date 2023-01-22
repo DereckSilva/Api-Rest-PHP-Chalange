@@ -21,6 +21,6 @@
         </style>
     </head>
     <body class="antialiased">
-        @livewire('products')
+
     </body>
 </html>
