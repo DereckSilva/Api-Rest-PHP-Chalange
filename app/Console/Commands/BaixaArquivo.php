@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\ConsultaEndPointService;
 use App\Services\ExtrairDadosService;
+use App\Services\ManipulacaoArquivoService;
 use App\Services\PersisteDadosService;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -54,15 +55,18 @@ class BaixaArquivo extends Command
             if(!Storage::exists(trim($linha))){
                 Storage::put(trim($linha), $content);
                 ExtrairDadosService::extrairDados($linha);
-                break;
             }else{
                 Storage::delete(trim($linha));
                 Storage::put(trim($linha), $content);
                 ExtrairDadosService::extrairDados($linha);
-                break;
             }
 
-            //PersisteDadosService::persisteDados(explode('}', '/var/www/html/storage/app/products_01Extraido.txt'));
+            $pos = strpos(trim($linha), '.');
+            $novoArquivo = substr(trim($linha), 0, $pos);
+
+            //manipula arquivo para ser inserido na base de dados
+            ManipulacaoArquivoService::formatarDados('/var/www/html/storage/app/'.$novoArquivo.'Extraido.txt');
+
         }
 
 
