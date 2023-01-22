@@ -67,7 +67,7 @@ class BaixaArquivo extends Command
             $novoArquivo = substr(trim($linha), 0, $pos);
 
             //manipula arquivo para ser inserido na base de dados
-            ManipulacaoArquivoService::formatarDados('/var/www/html/storage/app/'.$novoArquivo.'Extraido.txt');
+            ManipulacaoArquivoService::formatarDados('/var/www/html/storage/app/'.$novoArquivo.'Extraido.txt', true);
 
             $dadosCron = '{Conexão com base: Ok, Leitura de dados: Ok, Escrita na base: ok, ';
             $dadosCron .= "Data: ".now().", Inicio Cron: {$inicioCron}, Memória: ".memory_get_usage()."}";
@@ -75,7 +75,6 @@ class BaixaArquivo extends Command
             Storage::append($novoArquivo.'.log.txt', $dadosCron);
 
         }
-
 
 
     }

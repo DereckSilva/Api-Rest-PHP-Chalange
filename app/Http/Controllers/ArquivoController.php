@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ManipulacaoArquivoService;
+use Faker\Core\Number;
 use Illuminate\Http\Request;
 use Psy\Readline\Hoa\FileGeneric;
 
 class ArquivoController extends Controller
 {
     public function getNomeArquivo(){
-        $teste = '';
+
         $arquivo = file("/var/www/html/storage/app/produtos.txt");
 
         foreach($arquivo as $linha){
@@ -16,12 +18,17 @@ class ArquivoController extends Controller
             $pos = strpos($linha, '.');
             $novoArquivo = substr($linha, 0, $pos);
 
-            $conteudo = file_get_contents("/var/www/html/storage/app/".$novoArquivo.".log.txt");
+            $dadosCron = ManipulacaoArquivoService::formatarDados("/var/www/html/storage/app/".$novoArquivo.".log.txt");
 
-            $info = explode(',', $conteudo);
+            $segundosData = $dadosCron["Data"];
+            $segundoIniCron = $dadosCron["InicioCron"];
 
-            return $info;
+            $valueData = substr($segundosData, 18);
+            $valueIniCron = substr($segundoIniCron, 18);
 
+            $dadosCron["totalOnlineLog"] = intval($valueData) - intval($valueIniCron);
+
+            return response()->json(["dados"=>$dadosCron], 200);
         }
     }
 }

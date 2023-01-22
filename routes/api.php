@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArquivoController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Resources\ProductResource;
 use App\Models\Produto;
 use Illuminate\Http\Request;
@@ -18,14 +19,30 @@ use Symfony\Component\HttpFoundation\Response;
 |
 */
 
-//Route::get('/', [ArquivoController::class, 'getNomeArquivo']);
-Route::get('/', function(){
-    return Response(["message" => "hello"]);
-});
+Route::get('/', [ArquivoController::class, 'getNomeArquivo']);
 
-Route::get('te/{id}', function($id){
+Route::prefix('produtos')->group(function(){
 
-    $dados = Produto::where('code',$id)->get();
+    Route::middleware([\App\Http\Middleware\Products::class])
+        ->group(function(){
 
-    return ProductResource::collection($dados);
+            //desenvolvimento de rotas
+
+            Route::get('/', function (){
+                $dados = Produto::paginate();
+
+                return ProductResource::collection($dados);
+            })->withoutMiddleware('products');
+
+            Route::get('{code}', function($code){
+
+                $dados = Produto::where('code',$code)->get();
+
+                return ProductResource::collection($dados);
+            });
+
+            Route::put('{code}', [ProductsController::class, 'atualizaDados']);
+
+            Route::delete('{code}', [ProductsController::class, 'deletaDado']);
+        });
 });
