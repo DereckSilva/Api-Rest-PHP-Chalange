@@ -21,5 +21,5 @@ use Illuminate\Support\Facades\Storage;
 */
 
 Route::get('/', function () {
-    Cache::clear();
+    return 'opa';
 });

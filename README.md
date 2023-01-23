@@ -46,21 +46,65 @@ Para rodar o projeto localmente será necessário as seguintes instalações na 
 <li><a href="#docker">Docker - Versão: 20.10.12</a></li>
 </ul>
 
-Antes de começar, instale o git na sua máquina e clone o repositório:
-
-<ul><li>git clone https://github.com/DereckSilva/Api-Rest-PHP-Chalange</li></ul>
+# Executar o projeto 
 
 Instale o <a href="https://docs.docker.com/get-docker/">Docker</a> na sua máquina (necessário usar o docker via shell/bash) 
 
+Rode o seguinte comando para ter o laravel sail na sua máquina
+
+<ul><li>curl -s "https://laravel.build/example-app?with=mysql,redis" | bash</li></ul>
+
+Após a instalação remova as pastas de <b>app, bootstrap, config, database, lang, public, resources, routes, storage e tests</b>. Faça o clone do projeto com o seguinte comando.
+
+<ul><li>git clone https://github.com/DereckSilva/Api-Rest-PHP-Chalange</li></ul>
+
+Após a clonagem do repositório, pegue as pastas de <b>app, bootstrap, config, database, lang, public, resources, routes, storage e tests</b> do repositório clonado e adicione no path do laravel sail.
+
 Para inicializar o projeto localmente é necessário rodar o seguite comando:
 
-<ul><li>./vendor/bin/sail up -d</li></ul>
+Inicialixar o container:
+
+<ul><li>./vendor/bin/sail up -d </li></ul>
 
 O sistema será inicializado por padrão na porta 80 do navegador, porém pode ser alterado via docker-compose.yml.
 
+Para acessar o container rode o comando:
+
+<ul><li>./vendor/bin/sail root-shell </li></ul>
+
+No container executar os seguintes comandos:
+
+<ul>
+    <li> apt-get update </li>
+    <li> apt-get install nano </li>
+    <li> apt-get install systemctl </li>
+    <li> apt-get install cron </li>
+    <li> systemctl enable cron</li>
+</ul>
+
+Saia do container com o comando:
+
+<ul><li>exit</li></ul>
+
+Entre no container novamente como usuário normal, executando o comando:
+
+<ul><li>./vendor/bin/sail shell </li></ul>
+
+Execute o comando:
+
+<ul><li> crontab -e  </li></ul>
+
+Colar o seguinte comando no arquivo crontab:
+
+<ul><li>* * * * * * cd /var/www/html/ schedule:run 1>> /dev/null 2>&1</li></ul>
+
+Após colar o comano, sai do terminal e a aguarde a execução do cron job.
+
+Após a execução do cron job pode utilizar a API.
+
 ### Tecnologias
 <span id="doc"></span>
-<h4>As seguintes ferramentas foram usadas na construção do projeto:</h4>
+<h4>As seguintes ferramentas foram utilizadas na construção do projeto:</h4>
 
 - [Docker](https://docs.docker.com/) <span id="docker"></span>
 - [Laravel](https://laravel.com/)
