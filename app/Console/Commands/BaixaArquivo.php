@@ -8,6 +8,7 @@ use App\Services\ManipulacaoArquivoService;
 use App\Services\PersisteDadosService;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class BaixaArquivo extends Command
@@ -36,16 +37,13 @@ class BaixaArquivo extends Command
     {
         $inicioCron = now();
 
-        Storage::append("produtosExtraidos.txt", "");
-
         $texto = ConsultaEndPointService::getArquivo("https://challenges.coode.sh/food/data/json/index.txt");
 
         if(!Storage::exists("produtos.txt")){
-            Storage::append("produtos.txt", $texto);
+            Storage::prepend("produtos.txt", $texto);
         }
 
         $arquivo = file("/var/www/html/storage/app/produtos.txt");
-
 
         foreach($arquivo as $linha)
         {
@@ -56,25 +54,28 @@ class BaixaArquivo extends Command
 
             $content = $response->getBody()->getContents();
 
-            $arquivosCriados = file("/var/www/html/storage/app/produtosExtraidos.txt");
+            if(!Cache::has(trim($linha))){
 
-            if(!in_array(trim($linha),$arquivosCriados)){
-                Storage::append("produtosExtraidos.txt", trim($linha));
+                Cache::put(trim($linha), trim($linha), 604800);
                 Storage::put(trim($linha), $content);
+                Storage::append("produtosExtraidos.txt", trim($linha));
+
                 ExtrairDadosService::extrairDados($linha);
+
+                $pos = strpos(trim($linha), '.');
+                $novoArquivo = substr(trim($linha), 0, $pos);
+
+                //manipula arquivo para ser inserido na base de dados
+                ManipulacaoArquivoService::formatarDados('/var/www/html/storage/app/'.$novoArquivo.'Extraido.txt', true);
+
+                $dadosCron = '{Conexão com base: Ok, Leitura de dados: Ok, Escrita na base: Ok, ';
+                $dadosCron .= "Data: ".now().", Inicio Cron: {$inicioCron}, Memória: ".memory_get_usage()."}";
+
+                Storage::delete($novoArquivo.'.log.txt');
+                Storage::append($novoArquivo.'.log.txt', $dadosCron);
+                break;
             }
 
-            $pos = strpos(trim($linha), '.');
-            $novoArquivo = substr(trim($linha), 0, $pos);
-
-            //manipula arquivo para ser inserido na base de dados
-            ManipulacaoArquivoService::formatarDados('/var/www/html/storage/app/'.$novoArquivo.'Extraido.txt', true);
-
-            $dadosCron = '{Conexão com base: Ok, Leitura de dados: Ok, Escrita na base: Ok, ';
-            $dadosCron .= "Data: ".now().", Inicio Cron: {$inicioCron}, Memória: ".memory_get_usage()."}";
-
-            Storage::delete($novoArquivo.'.log.txt');
-            Storage::append($novoArquivo.'.log.txt', $dadosCron);
         }
     }
 }
