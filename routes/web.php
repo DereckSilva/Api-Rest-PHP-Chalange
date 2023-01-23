@@ -1,7 +1,9 @@
 <?php
 
+use App\Services\ExtrairDadosService;
 use App\Services\ManipulacaoArquivoService;
 use Dflydev\DotAccessData\Data;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -18,5 +20,13 @@ use Illuminate\Support\Facades\Storage;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $arquivos = file("/var/www/html/storage/app/arquivosGerados.txt");
+
+    foreach($arquivos as $arquivo){
+
+        if(Storage::exists(trim($arquivo))){
+            Storage::delete(trim($arquivo));
+        }
+
+    }
 });

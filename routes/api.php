@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 |
 */
 
-Route::get('/', [ArquivoController::class, 'getNomeArquivo']);
+Route::get('/', [ArquivoController::class, 'getInfoLogs']);
 
 Route::prefix('produtos')->group(function(){
 

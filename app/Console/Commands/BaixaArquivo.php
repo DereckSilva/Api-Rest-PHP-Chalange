@@ -36,6 +36,8 @@ class BaixaArquivo extends Command
     {
         $inicioCron = now();
 
+        Storage::append("produtosExtraidos.txt", "");
+
         $texto = ConsultaEndPointService::getArquivo("https://challenges.coode.sh/food/data/json/index.txt");
 
         if(!Storage::exists("produtos.txt")){
@@ -54,11 +56,10 @@ class BaixaArquivo extends Command
 
             $content = $response->getBody()->getContents();
 
-            if(!Storage::exists(trim($linha))){
-                Storage::put(trim($linha), $content);
-                ExtrairDadosService::extrairDados($linha);
-            }else{
-                Storage::delete(trim($linha));
+            $arquivosCriados = file("/var/www/html/storage/app/produtosExtraidos.txt");
+
+            if(!in_array(trim($linha),$arquivosCriados)){
+                Storage::append("produtosExtraidos.txt", trim($linha));
                 Storage::put(trim($linha), $content);
                 ExtrairDadosService::extrairDados($linha);
             }
@@ -69,13 +70,11 @@ class BaixaArquivo extends Command
             //manipula arquivo para ser inserido na base de dados
             ManipulacaoArquivoService::formatarDados('/var/www/html/storage/app/'.$novoArquivo.'Extraido.txt', true);
 
-            $dadosCron = '{Conexão com base: Ok, Leitura de dados: Ok, Escrita na base: ok, ';
+            $dadosCron = '{Conexão com base: Ok, Leitura de dados: Ok, Escrita na base: Ok, ';
             $dadosCron .= "Data: ".now().", Inicio Cron: {$inicioCron}, Memória: ".memory_get_usage()."}";
 
+            Storage::delete($novoArquivo.'.log.txt');
             Storage::append($novoArquivo.'.log.txt', $dadosCron);
-
         }
-
-
     }
 }
