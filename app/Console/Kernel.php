@@ -15,8 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('baixa:arquivo');
-        $schedule->command('exclui:arquivo');
+        $schedule->command('baixa:arquivo')->cron('* * * * *');
+        $schedule->command('exclui:arquivo')->cron('* * * * *');
     }
 
     /**

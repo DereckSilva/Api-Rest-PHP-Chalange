@@ -96,7 +96,15 @@ Execute o comando:
 
 Colar o seguinte comando no arquivo crontab:
 
-<ul><li>* * * * * * cd /var/www/html/ schedule:run 1>> /dev/null 2>&1</li></ul>
+<ul><li>0 10 * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1</li></ul>
+
+Certifique-se do cron estar executando no servidor:
+
+<ul><li>system status cron</li></ul>
+
+Caso não esteja executando, execute o comando:
+
+<ul><li>system ctl start cron</li></ul>
 
 Após colar o comano, sai do terminal e a aguarde a execução do cron job.
 
