@@ -71,7 +71,9 @@ class BaixaArquivo extends Command
                 $dadosCron = '{Conexão com base: Ok, Leitura de dados: Ok, Escrita na base: Ok, ';
                 $dadosCron .= "Data: ".now().", Inicio Cron: {$inicioCron}, Memória: ".memory_get_usage()."}";
 
-                Storage::delete($novoArquivo.'.log.txt');
+                if(Storage::exists($novoArquivo.'.log.txt')){
+                    Storage::delete($novoArquivo.'.log.txt');
+                }
                 Storage::append($novoArquivo.'.log.txt', $dadosCron);
                 break;
             }
