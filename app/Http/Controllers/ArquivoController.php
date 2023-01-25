@@ -31,41 +31,15 @@ class ArquivoController extends Controller
 
                     $dadosCron["arquivo"] = $novoArquivo;
 
-                    $segundosData = $dadosCron["Data"];
-                    $segundoIniCron = $dadosCron["InicioCron"];
-
-                    $valueData = substr($segundosData, 18);
-                    $valueIniCron = substr($segundoIniCron, 18);
-
-                    $dadosCron["totalOnlineLog"] = intval($valueData) - intval($valueIniCron);
-
                     array_push($this->infoLogs, $dadosCron);
                 }
             }
-        }catch(Exception $e){
-            return response()->json(["error" => $e->getMessage()], 500);
-        }
-
-    }
-
-    public function getInfoLogs(){
-        try {
-
-            //executa
-            $this->getNomeArquivo();
-
-            $totalOnlineLog = 0;
-
-            foreach($this->infoLogs as $arquivo){
-                $totalOnlineLog += $arquivo['totalOnlineLog'];
-            }
-
-            $this->infoLogs["total"] = $totalOnlineLog;
 
             return $this->infoLogs;
 
         }catch(Exception $e){
             return response()->json(["error" => $e->getMessage()], 500);
         }
+
     }
 }

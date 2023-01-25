@@ -5,8 +5,8 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Resources\ProductResource;
 use App\Models\Produto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
-use Symfony\Component\HttpFoundation\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 |
 */
 
-Route::get('/', [ArquivoController::class, 'getInfoLogs']);
+Route::get('/', [ArquivoController::class, 'getNomeArquivo']);
 
 Route::prefix('produtos')->group(function(){
 
@@ -28,17 +28,30 @@ Route::prefix('produtos')->group(function(){
 
             //desenvolvimento de rotas
 
-            Route::get('/', function (){
-                $dados = Produto::paginate(10);
+            Route::get('/', function (Request $request){
 
-                return ProductResource::collection($dados);
+                $key = "products_" . $request->page;
+
+                return Cache::remember($key, 600, function () {
+
+                    $dados = Produto::paginate(10);
+
+                    return ProductResource::collection($dados);
+                });
+
             })->withoutMiddleware('products');
 
-            Route::get('{code}', function($code){
+            Route::get('{code}', function($code, Request $request){
 
-                $dados = Produto::where('code',$code)->get();
+                $key = 'produtoUnico_' . $request->code;
 
-                return ProductResource::collection($dados);
+                return Cache::remember($key, 600, function () use ($code){
+
+                    $dados = Produto::where('code',$code)->get();
+
+                    return ProductResource::collection($dados);
+                });
+
             });
 
             Route::put('{code}', [ProductsController::class, 'atualizaDados']);
