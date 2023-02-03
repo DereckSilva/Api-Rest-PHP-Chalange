@@ -83,5 +83,7 @@ class BaixaArquivo extends Command
             }
 
         }*/
+
+        Cache::clear();
     }
 }

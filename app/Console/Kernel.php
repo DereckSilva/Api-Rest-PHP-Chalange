@@ -17,11 +17,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(DownloadFiles::dispatch('https://challenges.coode.sh/food/data/json/index.txt',
-        '/openFood/products.txt'));
-
-        $schedule->job(GetZipFile::dispatch('https://challenges.coode.sh/food/data/json/',
-        '/var/www/html/storage/app/openFood/products.txt'));
+        $schedule->command('baixa:arquivo');
        // $schedule->command('exclui:arquivo')->cron('* * * * *');
     }
 
