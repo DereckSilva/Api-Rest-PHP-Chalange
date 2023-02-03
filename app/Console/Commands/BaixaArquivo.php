@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\DownloadFiles;
+use App\Jobs\GetZipFile;
 use App\Services\ConsultaEndPointService;
 use App\Services\ExtrairDadosService;
 use App\Services\ManipulacaoArquivoService;
 use App\Services\PersisteDadosService;
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -35,15 +38,16 @@ class BaixaArquivo extends Command
      */
     public function handle()
     {
-        $inicioCron = now();
 
-        $texto = ConsultaEndPointService::getArquivo("https://challenges.coode.sh/food/data/json/index.txt");
+        DownloadFiles::dispatch('https://challenges.coode.sh/food/data/json/index.txt',
+                                '/openFood/products.txt'
+        );
 
-        if(!Storage::exists("produtos.txt")){
-            Storage::prepend("produtos.txt", $texto);
-        }
+        GetZipFile::dispatch('https://challenges.coode.sh/food/data/json/',
+                             '/var/www/html/storage/app/openFood/products.txt'
+        );
 
-        $arquivo = file("/var/www/html/storage/app/produtos.txt");
+        /*$arquivo = file("/var/www/html/storage/app/produtos.txt");
 
         foreach($arquivo as $linha)
         {
@@ -78,6 +82,6 @@ class BaixaArquivo extends Command
                 break;
             }
 
-        }
+        }*/
     }
 }

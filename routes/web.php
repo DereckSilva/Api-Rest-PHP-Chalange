@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Livewire\Login;
 use Illuminate\Support\Facades\Route;
 
 
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', Login::class);
+
+Route::get('ts', function (){
     return 'opa';
-});
+})->name('ts');
