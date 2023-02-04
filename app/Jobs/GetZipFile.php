@@ -54,6 +54,10 @@ class GetZipFile implements ShouldQueue
 
                 Cache::put($line, $line, 604800);
                 Storage::put($line, $content);
+
+                $path = storage_path('app/openFood/');
+
+                ExtractData::dispatch($path, $line);
                 break;
             }
 

@@ -62,7 +62,6 @@ class BaixaArquivo extends Command
 
                 Cache::put(trim($linha), trim($linha), 604800);
                 Storage::put(trim($linha), $content);
-                Storage::append("produtosExtraidos.txt", trim($linha));
 
                 ExtrairDadosService::extrairDados($linha);
 
